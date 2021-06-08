@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <script>
+            function mostraInfo(strUF) {
+                var n =0;
+                console.log(strUF);
+                if (strUF.length > 0) {
+                    let xmlHttp = new XMLHttpRequest();
+                    xmlHttp.onreadystatechange = function() {
+                        if (this.readyState == 4 && this.status == 200) {
+                            var obj = JSON.parse(this.responseText);
+                            let cities = document.getElementById("cidades");
+                            while (n < obj.length) {
+                                let city = new Option(obj[n],obj[n]);
+                                cities.options.add(city);
+                                n++;
+                            }  
+                        }
+                    }
+                    xmlHttp.open("GET", "teste_estado.php?estado="+strUF, true);
+                    xmlHttp.send();
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <form action="">
+            Diga seu Estado:
+            <input type="text" id="uf" name="uf" onchange="mostraInfo(this.value)">
+            <br>
+            <select id="cidades">
+            </select>
+            <br>
+            <input type="submit" value="Enviar">
+        </form>
+    </body>
+</html>
