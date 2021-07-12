@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Listar Produto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script>
+         function mostrarCodBarra() {
+            var n = 0;
+            let xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET","codBarras.php", true);
+            xmlHttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var obj = JSON.parse(this.responseText);
+                    cod  = document.getElementById("codBarra");
+                    while (n < obj.length) {
+                        let codigo = new Option(obj[n],obj[n]);
+                        cod.options.add(codigo);
+                        n++;
+                    }  
+                }
+            }
+            xmlHttp.send();
+        }
+        function listar() {
+            var obj;
+            let objProduto = document.getElementById("formCod");
+            let xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET", "listarCodigo.php?codBarra="+ objProduto.codBarra.value, true);
+            xmlHttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    obj = JSON.parse(this.responseText);
+                    confirm(obj);
+                }
+            }
+            xmlHttp.send();
+        }
+    </script>
+    </head>
+    <body class= "bg-white">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="Menu.html">Menu</a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="listarAtivos.php">Listar Ativos</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="listarCodigo.html"> Listar Codigos</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="detalhesProduto.html">Detalhes Produto</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="incluir.html">Incluir Produto</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="alterar.html">Alterar Produto</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="excluir.html">ExluirUsuarios</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>   
+        </nav>
+        <h3>Listar Porduto:</h3>
+        <form  action = ""  name="formCod" id="formCod">
+            Codigo de Barra:<select  id="codBarra"name="codBarra" onclick = "mostrarCodBarra()"> </select><br><br>
+            <input type="submit" name="op" value="Listar Produto" onclick="listar()">
+        </form>
+    </body>
+</html>

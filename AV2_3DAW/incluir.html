@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Incluir Produto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script>
+        function imagem() {
+            document.getElementById("codBarra");
+            document.getElementById("link").value = document.getElementById("codBarra").value+".png";
+        }
+        function dataAtual () {
+            data = new Date ( );
+            dia = data.getDate ( );
+            mes = data.getMonth ( );
+            ano = data.getFullYear ( );
+            dataAtual = dia+"/"+mes+"/"+ano;
+            document.getElementById("data").value = dataAtual;
+        }
+        function mostrarCategoria() {
+            var n =0;
+            let xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET","categoria.php", true);
+            xmlHttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var obj = JSON.parse(this.responseText);
+                    let category = document.getElementById("categoria");
+                    while (n < obj.length) {
+                        let cat = new Option(obj[n],obj[n]);
+                        category.options.add(cat);
+                        n++;
+                    }  
+                }
+            }
+            xmlHttp.send();
+        }
+        function mostrarTipo() {
+            var n = 0;
+            let xmlHttp = new XMLHttpRequest();
+            xmlHttp.open("GET","tipo.php", true);
+            xmlHttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var obj = JSON.parse(this.responseText);
+                    let type = document.getElementById("tipo");
+                    while (n < obj.length) {
+                        let tipo = new Option(obj[n],obj[n]);
+                        type.options.add(tipo);
+                        n++;
+                    }  
+                }
+            }
+            xmlHttp.send();
+        }
+        function incluirProduto() {
+            let objProduto = document.getElementById("formProduto");
+            let xmlHttp = new XMLHttpRequest();
+            let msg = validarProduto();
+            if (msg == "") {
+                xmlHttp.open("GET", "incluir.php?codBarra="+ objProduto.codBarra.value +"&nome=" + objProduto.nome.value +
+                "&fab=" + objProduto.fab.value + "&preco=" + objProduto.preco.value + "&qtEst=" +
+                objProduto.qtEst.value + "&peso=" + objProduto.peso.value + "&desc="+objProduto.desc.value+"&link="+
+                objProduto.link.value+"&data="+objProduto.data.value +"&status="+objProduto.status.value+
+                "&tipo="+objProduto.tipo.value+"&categoria="+objProduto.categoria.value, true);
+                xmlHttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        let obj = JSON.parse(this.responseText);
+                        confirm (obj);
+                    }     
+                }
+                xmlHttp.send();
+            }
+        }
+        function validarProduto() {
+            let objValidForm = document.getElementById("formProduto");
+            let codBarra = objValidForm.codBarra.value;
+            let nome = objValidForm.nome.value;
+            let fab = objValidForm.fab.value;
+            let preco = objValidForm.preco.value;
+            let qtEst= objValidForm.qtEst.value;
+            let peso = objValidForm.peso.value;
+            let desc = objValidForm.desc.value;
+            let link= objValidForm.link.value;
+            let data = objValidForm.data.value;
+            let status = objValidForm.status.value;
+            let tipo= objValidForm.tipo.value;
+            let categoria = objValidForm.categoria.value;
+            let msg = "";
+            if (nome ===""){
+                msg = " Preencha o campo nome";
+                alert(msg);
+            }
+            if (fab ===""){
+                msg = " Fabricante Invalido";
+                alert(msg);
+            }
+            if (tipo ===""){
+                msg = " Tipo Invalido";
+                alert(msg);
+            }
+            if (categoria ===""){
+                msg = " Categoria Invalida";
+                alert(msg);
+            }
+            if (desc ===""){
+                msg = " Preencha a descricao";
+                alert(msg);
+            }
+            if (status !== "Ativo" && status !== "Inativo"){
+                msg = "Status Invalido";
+                alert(msg);
+            }
+            if (isNaN(codBarra) || codBarra < 0) {
+                msg = "Codigo Invalido";
+                alert(msg);
+            }
+            if (isNaN(peso) || peso < 0  ) {
+                msg = "Peso Invalido";
+                alert(msg);
+            }
+            if (isNaN(qtEst) || qtEst < 0) {
+                msg = "Valor do Estoque Invalido";
+                alert(msg);
+            }
+            if (isNaN(preco) || preco < 0) {
+                msg = "Preco Invalido";
+                alert(msg);
+            }
+            if (!testaLink(link)){
+                msg = "Link Invalido";
+                alert(msg);
+            }
+            return msg;
+        } 
+        function testaLink(link) {
+            let link1 = /\S+\.\S+/;
+            if (!link1.test(link)) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+    </script>
+    </head>
+    <body class= "bg-white">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="Menu.html">Menu</a>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="listarAtivos.php">Listar Ativos</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="listarCodigo.html"> Listar Codigos</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="DetalhesProduto.html">Detalhes Produto</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="incluir.html">Incluir Produto</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="alterar.html">Alterar Produto</a>
+                        </li>
+                        <li class="nav-item">
+                             <a class="nav-link active" aria-current="page" href="excluir.html">ExluirUsuarios</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>   
+        </nav>
+        <h3>Incluir Porduto:</h3>
+        <form  action = ""   name="formProduto" id="formProduto">
+            Codigo de Barra: <input type="text" id="codBarra"name="codBarra"onchange = "imagem(),mostrarTipo(),mostrarCategoria(),dataAtual()"> <br><br>
+            Nome: <input type="text" id="nome" name="nome" > <br><br>
+            Fabricante: <input type="text" id="fab" name="fab"> <br><br>
+            Preco Venda: <input type="text" id="preco" name="preco"> <br><br>
+            Quantidade Estoque: <input type="text" id="qtEst" name="qtEst"> <br><br>
+            Peso: <input type="text" id="peso" name="peso"> <br><br>
+            Descricao: <input type="text" id="desc" name="desc"> <br><br>
+            Link Imagem: <input type="text" id="link" name="link"> <br><br>
+            Data da Inclusao: <input type="text" id="data" name="data" value = "data"> <br><br>
+            Status Estoque: <input type="text" id="status" name="status"> <br><br>
+            Tipo de Produto:  <select name = "tipo" id="tipo" ></select> <br><br>
+            Categoria: <select name = "categoria" id="categoria" ></select> <br><br>
+            <input type="submit" name="op" value="Inserir Produto" onclick="incluirProduto()">
+        </form>
+    </body>
+</html>
